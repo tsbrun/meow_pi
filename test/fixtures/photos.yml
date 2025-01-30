@@ -1,9 +1,9 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  title: MyString
-  desc: MyText
+  title: Cat in Basket
+  desc: This is a cat in a basket!
 
 two:
-  title: MyString
-  desc: MyText
+  title: Orange Cat
+  desc: No description needed...
