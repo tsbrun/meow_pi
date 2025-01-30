@@ -26,9 +26,32 @@ class PhotosControllerTest < ActionDispatch::IntegrationTest
     assert_response :no_content
   end
 
-  test "should update a previously uploaded cat pic" do 
+  test "should update a previously uploaded cat pic (image only)" do 
     patch photo_url(@photo), params: { file: @file }
     assert_response :success
+  end
+
+  test "should update a previously uploaded cat pic (metadata only)" do 
+    patch photo_url(@photo), params: { title: "Updated Title" }
+    assert_response :success
+  end
+
+  test "should return 400 bad request when no updates are made" do 
+    patch photo_url(@photo), params: {} # No file, no metadata
+    assert_response :bad_request
+    assert_match "No updates were made.", response.body
+  end
+
+  test "should return 422 unprocessable entity when file upload fails" do 
+    patch photo_url(@photo), params: { file: "invalid_file" } # Not a real file
+    assert_response :unprocessable_entity
+    assert_match "Failed to attach file", response.body
+  end
+
+  test "should return 404 not found when updating a nonexistent photo" do
+    patch photo_url("nonexistent-id"), params: { title: "This won't work" }
+    assert_response :not_found
+    assert_match "Photo not found", response.body
   end
 
   test "should fetch a cat pic by its id" do 

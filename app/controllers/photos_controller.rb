@@ -4,12 +4,12 @@ class PhotosController < ApplicationController
   # GET /photos
   def index
     @photos = Photo.all
-    render json: { photos: @photos.map { |photo| format_photo_response(photo) } }
+    render json: { photos: @photos.map { |photo| format_photo_response(photo) } }, status: :ok
   end
 
   # GET /photos/1
   def show
-    render json: format_photo_response(@photo)
+    render json: format_photo_response(@photo), status: :ok
   end
 
   # POST /photos
@@ -27,20 +27,30 @@ class PhotosController < ApplicationController
   # PATCH/PUT /photos/1
   def update
     updated = false
+    errors = []
 
     if photo_params.present?
-      updated = @photo.update(photo_params)
+      unless @photo.update(photo_params)
+        errors.concat(@photo.errors.full_messages)
+      else
+        updated = true
+      end
     end
   
     if file_params.present?
-      attach_file(@photo, file_params[:file])
-      updated = true
+      unless attach_file(@photo, file_params[:file])
+        errors << "Failed to attach file."
+      else
+        updated = true
+      end
     end
   
     if updated
-      render json: format_photo_response(@photo)
+      render json: format_photo_response(@photo), status: :ok
+    elsif errors.any?
+      render json: { errors: errors }, status: :unprocessable_entity
     else
-      render json: { errors: @photo.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: ["No updates were made."] }, status: :bad_request
     end
   end
 
@@ -53,6 +63,8 @@ class PhotosController < ApplicationController
   private
     def set_photo
       @photo = Photo.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: "Photo not found." }, status: :not_found
     end
 
     def photo_params
