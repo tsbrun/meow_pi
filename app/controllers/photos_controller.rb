@@ -56,8 +56,11 @@ class PhotosController < ApplicationController
 
   # DELETE /photos/1
   def destroy
-    @photo.destroy!
-    head :no_content
+    if @photo.destroy
+      head :no_content
+    else
+      render json: { error: "Failed to delete photo." }, status: :unprocessable_entity
+    end
   end
 
   private
