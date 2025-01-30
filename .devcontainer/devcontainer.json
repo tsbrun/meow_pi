@@ -7,6 +7,6 @@
     "terminal.integrated.defaultProfile.linux": "bash"
   },
   "extensions": ["rebornix.ruby", "ms-vscode-remote.remote-containers"],
-  "forwardPorts": [3005, 5520],
-  "postCreateCommand": "bundle install"
+  "forwardPorts": [3000, 5432],
+  "postCreateCommand": "bundle install && rails db:create && rails db:migrate && rails server"
 }

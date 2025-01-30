@@ -6,7 +6,7 @@ services:
       - /Users/anyabrunwork/Projects/meow_pi:/workspace 
     command: sleep infinity
     ports:
-      - "3005:3000"
+      - "3000:3000"
     depends_on:
       - db
   db:
@@ -17,7 +17,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: meow_pi_development
     ports:
-      - "5520:5432"
+      - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
