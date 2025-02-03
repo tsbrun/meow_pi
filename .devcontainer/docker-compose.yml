@@ -3,7 +3,7 @@ services:
   app:
     build: .
     volumes:
-      - /Users/anyabrunwork/Projects/meow_pi:/workspace 
+      - ./:/workspace 
     command: sleep infinity
     ports:
       - "3000:3000"
